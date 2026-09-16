@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Surfaces — a clean light-blue page with near-neutral panels on top. The
+     blue belongs to the page and the accents; panels stay light so text,
+     dividers and icons keep their contrast. */
+  --color-paper: #e7eff9;
+  --color-paper-deep: #d7e3f2;
+  --color-surface: #fbfcfe;
+  --color-line: #d5e0ee;
+  --color-line-strong: #b7c8de;
+
+  /* Text — cool neutral, not saturated blue. */
+  --color-ink: #101a29;
+  --color-ink-soft: #49566a;
+  --color-ink-faint: #78859a;
+
+  /* Brand — the MMUN poster's royal navy and metallic gold. The navy is
+     deliberately blue rather than slate: it is the field the gold sits on, and
+     gold reads as bronze against a desaturated ground. */
+  --color-navy-950: #040f27;
+  --color-navy-900: #071c41;
+  --color-navy-800: #0d2a5c;
+  --color-navy-700: #143a78;
+  --color-navy-600: #2160c4;
+  --color-navy-100: #e3eaf6;
+
+  /* Gold, read off the poster's leaf and lettering: a deep edge, a mid body
+     and a pale highlight. Used as a ramp for flat fills and as the three stops
+     of --gradient-gold for anything that should look struck rather than
+     printed. */
+  --color-brass-600: #8a6620;
+  --color-brass-500: #b5893a;
+  --color-brass-400: #d9b262;
+  --color-brass-300: #eed492;
+  --color-brass-100: #f6eed9;
+
+  /* Status tones — navy, gold and wine, the heraldic set the poster implies.
+     Kept as semantic names (`live`, `rose`) rather than colour names so the
+     meaning stays readable even though the hues moved. */
+
+  /* Live / now / success — the brand gold. */
+  --color-live: #8a6620;
+  --color-live-soft: #f6eed9;
+
+  /* Break / draft / pending — copper, warm enough to sit beside gold without
+     being mistaken for it at badge size. */
+  --color-amber: #9c5a2c;
+  --color-amber-soft: #f7e7d9;
+
+  /* Upcoming / next — pulled into the new navy family. */
+  --color-sky: #24548f;
+  --color-sky-soft: #e5ecf7;
+
+  /* Urgent / danger / error — deep wine. Gold's complement is blue, which the
+     navy already owns, so alarm is carried by depth and warmth instead. */
+  --color-rose: #8f2740;
+  --color-rose-soft: #f8e4e8;
+
+  --color-slate: #5c6470;
+  --color-slate-soft: #eceded;
+
+  --shadow-card: 0 1px 0 rgb(7 28 65 / 0.03), 0 1px 3px rgb(7 28 65 / 0.06);
+  --shadow-raised: 0 1px 0 rgb(7 28 65 / 0.04), 0 8px 24px -8px rgb(7 28 65 / 0.18);
+
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-live-ping: live-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+  @keyframes shimmer {
+    0% { background-position: 150% 0; }
+    100% { background-position: -50% 0; }
+  }
+  @keyframes live-ping {
+    0% { transform: scale(1); opacity: 0.55; }
+    80%, 100% { transform: scale(2.4); opacity: 0; }
+  }
+}
+
+@utility pb-nav {
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+}
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+@utility gold-text {
+  background-image: linear-gradient(
+    100deg,
+    #8a6620 0%,
+    #d9b262 24%,
+    #f3e0ac 48%,
+    #d9b262 72%,
+    #8a6620 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Hairline that catches the light in the middle, like the poster's rules. */
+@utility gold-rule {
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--color-brass-500) 18%,
+    var(--color-brass-300) 50%,
+    var(--color-brass-500) 82%,
+    transparent
+  );
+}
+
+/* The poster's ground: near-black at the corners, lifting to royal blue
+   behind the subject. */
+@utility navy-field {
+  background-color: var(--color-navy-900);
+  background-image:
+    radial-gradient(110% 80% at 50% 0%, rgb(29 78 150 / 0.55), transparent 62%),
+    radial-gradient(90% 70% at 50% 120%, rgb(13 42 92 / 0.9), transparent 70%);
+}
+
+@utility eyebrow {
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@layer base {
+  html {
+    color-scheme: light dark;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    background-color: var(--color-paper);
+  }
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-navy-600);
+    outline-offset: 2px;
+  }
+  button, [role="button"], a {
+    touch-action: manipulation;
+  }
+  ::selection {
+    background: var(--color-brass-100);
+    color: var(--color-ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ── Dark mode ──────────────────────────────────────────────────────────────
+   Driven by data-theme on <html>, which an inline script in index.html sets
+   from the saved preference (or the OS when there isn't one) before the first
+   paint. Unlayered on purpose: @theme emits its variables into Tailwind's
+   `theme` layer, and unlayered rules beat layered ones regardless of source
+   order. Only the semantic tokens are redefined, so every component follows
+   without a single `dark:` class.
+
+   The whole palette steps up one level rather than simply inverting: the page
+   is near-black blue, cards sit above it in dark blue, and the navy accents
+   used for buttons and selected chips become mid blue so they still read as
+   raised. Gold and wine lighten, because on a dark ground they are now text
+   colours rather than ink on a tint. */
+:root[data-theme="dark"] {
+  --color-paper: #060f1e;
+  --color-paper-deep: #030913;
+  --color-surface: #101f39;
+  --color-line: #1e3357;
+  --color-line-strong: #2b4369;
+
+  --color-ink: #e8eefb;
+  --color-ink-soft: #a6b7d2;
+  --color-ink-faint: #7589a7;
+
+  /* Accents lift above the surface instead of sinking into it. */
+  --color-navy-950: #02080f;
+  --color-navy-900: #123566;
+  --color-navy-800: #17417b;
+  --color-navy-700: #1d4e96;
+  --color-navy-600: #4c8df2;
+  --color-navy-100: #d9e6f8;
+
+  /* Gold as a light-on-dark text colour. */
+  --color-brass-600: #dcb56a;
+  --color-brass-500: #c99e4c;
+  --color-brass-400: #e3c383;
+  --color-brass-300: #f1dcae;
+  --color-brass-100: #2b2211;
+
+  --color-live: #e0be76;
+  --color-live-soft: #33290f;
+  --color-amber: #e0a473;
+  --color-amber-soft: #33210f;
+  --color-sky: #8db6ef;
+  --color-sky-soft: #112a4c;
+  --color-rose: #eb92a8;
+  --color-rose-soft: #3a1523;
+  --color-slate: #9fadc0;
+  --color-slate-soft: #17243a;
+
+  --shadow-card: 0 1px 0 rgb(0 0 0 / 0.2), 0 1px 3px rgb(0 0 0 / 0.35);
+  --shadow-raised: 0 1px 0 rgb(0 0 0 / 0.25), 0 8px 24px -8px rgb(0 0 0 / 0.65);
+}

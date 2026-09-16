@@ -1,0 +1,77 @@
+rules_version = '2';
+
+// GMUN — Firestore rules.
+//   gmun-portal  (React, delegates)  reads everything below.
+//   gmun-legacy  (this console, organizers) writes it.
+// Anything not matched here is denied by default.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Keep in sync with ADMIN_UIDS in firebase-config.js. That copy only
+    // decides what the console renders; this is what actually enforces access.
+    function isAdmin() {
+      return signedIn() && request.auth.uid in [
+        "7cIMzT67tsVWOIZUVlTRi8n28gl1"
+      ];
+    }
+
+    // ---- Delegate profiles ------------------------------------------------
+    // get: your own profile, which is all the portal ever needs.
+    // list: organizers only, so a delegate can't pull the whole roster from
+    // the browser console with getDocs(collection(db, "users")).
+    match /users/{userId} {
+      allow get: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+
+      // Delegates cannot write their own profile. Assignments come from the
+      // organizers, so there is no legitimate client write path at all — and
+      // removing the UI is not enough on its own, since a delegate can call
+      // setDoc(doc(db,'users',theirUid), {...}) straight from the browser
+      // console. This is what actually stops that.
+      allow write: if isAdmin();
+    }
+
+    // ---- Help requests ----------------------------------------------------
+    // The portal's "your earlier requests" list works because a delegate query
+    // constrained by userId satisfies this rule for every document it returns.
+    match /help_requests/{requestId} {
+      allow read: if signedIn() && (isAdmin() || resource.data.userId == request.auth.uid);
+
+      // Identity is pinned to the caller's own token, so a request can't be
+      // filed in someone else's name.
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.userEmail == request.auth.token.email;
+
+      allow update, delete: if isAdmin();
+    }
+
+    // ---- Organizer-written, delegate-readable ------------------------------
+    match /conference/{docId}    { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /schedule/{eventId}    { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /announcements/{id}    { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /documents/{docId}     { allow read: if signedIn(); allow write: if isAdmin(); }
+
+    // Newspaper. Delegates read; only organizers write, so `published` can be
+    // trusted as an editorial flag rather than a client-side suggestion.
+    match /news/{articleId}      { allow read: if signedIn(); allow write: if isAdmin(); }
+
+    // Not written by the console yet. The portal falls back to its built-in
+    // guide when guide_sections is empty, so these can stay empty indefinitely
+    // or be filled in by hand from the Firebase console.
+    match /guide_sections/{id}   { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /contacts/{id}         { allow read: if signedIn(); allow write: if isAdmin(); }
+
+    // ---- Original portal's collections, still in use ------------------------
+    // The delegate app reads schedule_events alongside schedule/, so the
+    // conference works without migrating anything first. Delegates need read
+    // access for that; only organizers write.
+    match /schedule_events/{id}  { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /activity/{id}         { allow read: if signedIn(); allow write: if isAdmin(); }
+  }
+}
