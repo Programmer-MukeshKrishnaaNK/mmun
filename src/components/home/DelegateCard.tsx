@@ -32,7 +32,9 @@ export function DelegateCard() {
   }
 
   const p = profile.data;
-  const details = profileRows(p).filter((r) => r.label !== PROFILE_FIELD_LABELS.committee);
+  const details = profileRows(p).filter(
+    (r) => r.label !== PROFILE_FIELD_LABELS.committee && r.label.toLowerCase() !== "portfolio"
+  );
 
   return (
     <section
@@ -50,6 +52,9 @@ export function DelegateCard() {
           <p className="eyebrow text-brass-400">Delegate</p>
           <p className="mt-1 truncate font-display text-[1.5rem] leading-tight font-medium">{p.name}</p>
           {p.committee && <p className="mt-0.5 truncate text-sm text-white/70">{p.committee}</p>}
+          {p.portfolio && (
+            <p className="mt-0.5 truncate text-sm font-medium text-brass-300">{p.portfolio}</p>
+          )}
         </div>
         <Avatar name={p.name} inverted />
       </div>
@@ -64,9 +69,10 @@ export function DelegateCard() {
           ))}
         </dl>
       ) : (
-        !p.committee && (
+        !p.committee &&
+        !p.portfolio && (
           <p className="relative mt-4 border-t border-white/10 pt-4 text-sm text-white/60">
-            Your committee assignment will appear here once it's added.
+            Your committee and portfolio will appear here once they're added.
           </p>
         )
       )}
