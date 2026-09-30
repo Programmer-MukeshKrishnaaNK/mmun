@@ -32,6 +32,7 @@ export function DelegateCard() {
   }
 
   const p = profile.data;
+  console.log("profile", p);
   const details = profileRows(p).filter(
     (r) => r.label !== PROFILE_FIELD_LABELS.committee && r.label.toLowerCase() !== "portfolio"
   );
