@@ -6,13 +6,14 @@ import { ErrorState } from "@/components/ui/States";
 import { PROFILE_FIELD_LABELS } from "@/constants/conference";
 import { useConference } from "@/context/ConferenceContext";
 import type { DelegateProfile } from "@/types";
+import { formatAssignment } from "@/utils/assignment";
 import { formatRelative } from "@/utils/time";
 import { Avatar } from "./Avatar";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function profileRows(p: DelegateProfile): Array<{ label: string; value: string }> {
   const rows: Array<{ label: string; value: string | undefined }> = [
-    { label: PROFILE_FIELD_LABELS.committee, value: p.committee },
+    { label: PROFILE_FIELD_LABELS.assignment, value: formatAssignment(p.portfolio, p.committee) },
     { label: PROFILE_FIELD_LABELS.country, value: p.country },
     { label: PROFILE_FIELD_LABELS.position, value: p.position },
   ];

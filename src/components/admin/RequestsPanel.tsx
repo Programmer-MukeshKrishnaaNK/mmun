@@ -16,6 +16,7 @@ import {
 } from "@/services/admin";
 import { useConfirm } from "./ConfirmDialog";
 import { InputField } from "./fields";
+import { formatAssignment } from "@/utils/assignment";
 import { toAppError } from "@/utils/errors";
 
 // ─── typo-tolerant search ─────────────────────────────────────────────────
@@ -190,6 +191,7 @@ export function DelegatesPanel() {
         fuzzyMatch(term, d.name) ||
         fuzzyMatch(term, d.school) ||
         fuzzyMatch(term, d.committee) ||
+        fuzzyMatch(term, d.portfolio) ||
         fuzzyMatch(term, d.email),
     );
   }, [delegates, term]);
@@ -203,7 +205,7 @@ export function DelegatesPanel() {
       />
       <InputField
         label="Search"
-        hint="name, school or committee — tolerates typos"
+        hint="name, email, portfolio, school or committee — tolerates typos"
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         placeholder="Pranab"
@@ -231,7 +233,7 @@ export function DelegatesPanel() {
               <li key={d.uid} className="px-4 py-3">
                 <p className="text-[0.9375rem] font-medium text-ink">{d.name ?? "(no name set)"}</p>
                 <p className="mt-0.5 text-xs text-ink-faint">
-                  {d.school ?? "no school"} · {d.committee ?? "no committee"}
+                  {d.school ?? "no school"} · {formatAssignment(d.portfolio, d.committee) ?? "no committee"}
                 </p>
               </li>
             ))}

@@ -27,6 +27,8 @@ export interface DelegateProfile {
   /** False when users/{uid} has not been created yet. */
   exists: boolean;
   committee?: string;
+  /** Firestore `portfolio` — the delegate's role, e.g. "Delegate". */
+  portfolio?: string;
   /** Optional future assignment fields — shown only when present. */
   country?: string;
   position?: string;

@@ -42,7 +42,7 @@ export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
 
 /** Display labels for users/{uid} fields. */
 export const PROFILE_FIELD_LABELS = {
-  committee: "Committee",
+  assignment: "Assignment",
   country: "Country",
   position: "Position",
 } as const;

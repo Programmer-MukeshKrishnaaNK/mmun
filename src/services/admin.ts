@@ -99,6 +99,7 @@ export interface AdminDelegate {
   name?: string;
   school?: string;
   committee?: string;
+  portfolio?: string;
   email?: string;
 }
 
@@ -515,6 +516,7 @@ export async function fetchDelegates(): Promise<AdminDelegate[]> {
       name: asString(data.name),
       school: asString(data.school),
       committee: asString(data.committee),
+      portfolio: asString(data.portfolio),
       email: asString(data.email),
     };
   });

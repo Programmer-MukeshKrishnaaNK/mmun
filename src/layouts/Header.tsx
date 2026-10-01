@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { PAGE_TITLES, ROUTES } from "@/constants/routes";
 import { useConference } from "@/context/ConferenceContext";
 import { signOut } from "@/services/auth";
+import { formatAssignment } from "@/utils/assignment";
 import { cn } from "@/utils/cn";
 import { useNavItems } from "./navigation";
 
@@ -28,7 +29,8 @@ export function Header() {
   };
 
   const name = profile.status === "ready" ? profile.data.name : undefined;
-  const committee = profile.status === "ready" ? profile.data.committee : undefined;
+  const assignment =
+    profile.status === "ready" ? formatAssignment(profile.data.portfolio, profile.data.committee) : undefined;
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/85 pt-safe backdrop-blur-lg">
@@ -94,8 +96,8 @@ export function Header() {
               {name ? (
                 <>
                   <span className="block max-w-40 truncate text-sm leading-tight font-medium text-ink">{name}</span>
-                  {committee && (
-                    <span className="block max-w-40 truncate text-xs leading-tight text-ink-faint">{committee}</span>
+                  {assignment && (
+                    <span className="block max-w-40 truncate text-xs leading-tight text-ink-faint">{assignment}</span>
                   )}
                 </>
               ) : (

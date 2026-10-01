@@ -5,6 +5,7 @@ import { Panel } from "@/components/ui/Panel";
 import { ErrorState } from "@/components/ui/States";
 import { PROFILE_FIELD_LABELS } from "@/constants/conference";
 import { useConference } from "@/context/ConferenceContext";
+import { formatAssignment } from "@/utils/assignment";
 
 export function DelegateCard() {
   const { profile, retryProfile } = useConference();
@@ -32,10 +33,8 @@ export function DelegateCard() {
   }
 
   const p = profile.data;
-  console.log("profile", p);
-  const details = profileRows(p).filter(
-    (r) => r.label !== PROFILE_FIELD_LABELS.committee && r.label.toLowerCase() !== "portfolio"
-  );
+  const assignment = formatAssignment(p.portfolio, p.committee);
+  const details = profileRows(p).filter((r) => r.label !== PROFILE_FIELD_LABELS.assignment);
 
   return (
     <section
@@ -52,10 +51,7 @@ export function DelegateCard() {
         <div className="min-w-0">
           <p className="eyebrow text-brass-400">Delegate</p>
           <p className="mt-1 truncate font-display text-[1.5rem] leading-tight font-medium">{p.name}</p>
-          {p.committee && <p className="mt-0.5 truncate text-sm text-white/70">{p.committee}</p>}
-          {p.portfolio && (
-            <p className="mt-0.5 truncate text-sm font-medium text-brass-300">{p.portfolio}</p>
-          )}
+          {assignment && <p className="mt-0.5 truncate text-sm text-white/70">{assignment}</p>}
         </div>
         <Avatar name={p.name} inverted />
       </div>
@@ -70,10 +66,9 @@ export function DelegateCard() {
           ))}
         </dl>
       ) : (
-        !p.committee &&
-        !p.portfolio && (
+        !assignment && (
           <p className="relative mt-4 border-t border-white/10 pt-4 text-sm text-white/60">
-            Your committee and portfolio will appear here once they're added.
+            Your committee assignment will appear here once it's added.
           </p>
         )
       )}
