@@ -38,6 +38,12 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // The nav labels the newspaper "News", so /news is the URL people type or
+  // share. Send it to the real route rather than letting it fall through to
+  // the catch-all below and land on Home.
+  { path: "/news", element: <Navigate to={ROUTES.newspaper} replace /> },
+  // Anything else unknown goes to the start page. Signed-out visitors are then
+  // bounced to /login by RequireAuth, as for any other protected route.
   { path: "*", element: <Navigate to={ROUTES.home} replace /> },
 ]);
 
